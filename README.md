@@ -4,6 +4,7 @@ Exports Miro frames as full-detail SVGs or JSON using a headless Puppeteer brows
 
 - [Authentication](#authentication)
 - [CLI](#cli)
+- [Docker](#docker)
 - [Programmatic usage](#programmatic-usage)
 
 ## Authentication
@@ -120,3 +121,93 @@ const svgOfFrame1 = await miroBoard.getSvg([framesWithTitleFrame1[0].id]);
 > `miroBoard.dispose()` may be called at any time to dispose of the instance manually.
 
 Types for many of the common board object types has been provided in [miro-types.ts](src/miro-types.ts).
+
+## Docker
+
+This tool can also be used via Docker, which eliminates the need to install Node.js locally.
+
+### Getting the Docker image
+
+**Option 1: Build locally**
+
+```bash
+docker build -t miro-export .
+```
+
+**Option 2: Pull from registry**
+
+```bash
+docker pull ghcr.io/adrigia2/miro-export:latest
+```
+
+### Usage with Docker
+
+Export a specific frame:
+
+```bash
+docker run --rm -v ${PWD}/exports:/output miro-export \
+  -t YOUR_MIRO_TOKEN \
+  -b YOUR_BOARD_ID \
+  -f "Frame Name" \
+  -o "output.svg"
+```
+
+Export the entire board:
+
+```bash
+docker run --rm -v ${PWD}/exports:/output miro-export \
+  -t YOUR_MIRO_TOKEN \
+  -b YOUR_BOARD_ID \
+  -o "board.svg"
+```
+
+Export in JSON format:
+
+```bash
+docker run --rm -v ${PWD}/exports:/output miro-export \
+  -t YOUR_MIRO_TOKEN \
+  -b YOUR_BOARD_ID \
+  -f "Frame Name" \
+  -e json \
+  -o "output.json"
+```
+
+Export multiple frames:
+
+```bash
+docker run --rm -v ${PWD}/exports:/output miro-export \
+  -t YOUR_MIRO_TOKEN \
+  -b YOUR_BOARD_ID \
+  -f "Frame 1" "Frame 2" "Frame 3" \
+  -o "{frameName}.svg"
+```
+
+### Using Docker Compose
+
+Create a `.env` file with your credentials:
+
+```env
+MIRO_TOKEN=your_token_here
+MIRO_BOARD_ID=your_board_id_here
+```
+
+Then run:
+
+```bash
+docker-compose run --rm miro-export -t $MIRO_TOKEN -b $MIRO_BOARD_ID -f "Frame Name" -o "output.svg"
+```
+
+Or use the production compose file to pull the pre-built image:
+
+```bash
+docker-compose -f docker-compose.prod.yml run --rm miro-export -t $MIRO_TOKEN -b $MIRO_BOARD_ID -f "Frame Name" -o "output.svg"
+```
+
+### Docker notes
+
+- **Output directory**: Files are saved to the `./exports` directory (create it if it doesn't exist)
+- **Volume mounting**: The `-v ${PWD}/exports:/output` parameter mounts your local `exports` directory into the container
+- **Auto-removal**: The `--rm` flag automatically removes the container after execution
+- **Windows PowerShell**: Use the full path for volumes, e.g., `-v C:\Users\yourUser\path\to\exports:/output`
+
+For more detailed Docker instructions and troubleshooting, see [README.Docker.md](README.Docker.md).
