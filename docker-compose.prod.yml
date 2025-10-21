@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  miro-export:
+    # Usa l'immagine dalla repository invece di buildare localmente
+    image: ghcr.io/adrigia2/miro-export:latest
+    volumes:
+      # Monta la directory corrente per salvare gli output
+      - ./exports:/output
+    # Esempio di utilizzo - modifica con i tuoi parametri
+    # Rimuovi il commento e personalizza il comando qui sotto
+    # command: ["-t", "YOUR_TOKEN", "-b", "YOUR_BOARD_ID", "-f", "Frame Name", "-o", "output.svg"]
+    
+    # Oppure usa le variabili d'ambiente (opzionale)
+    environment:
+      - MIRO_TOKEN=${MIRO_TOKEN:-}
+      - MIRO_BOARD_ID=${MIRO_BOARD_ID:-}

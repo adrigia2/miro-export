@@ -1,0 +1,15 @@
+node_modules
+build
+*.log
+.git
+.gitignore
+.eslintrc
+.prettierrc
+*.md
+!README.md
+.vscode
+.idea
+coverage
+dist
+*.test.ts
+tests
